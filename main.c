@@ -20,7 +20,7 @@ uint32_t fnv1(char *input) {
   return hash;
 }
 
-typedef uint8_t o
+typedef uint8_t opcode_t;
 
 // opcodes
 #define op_mov 0x00
