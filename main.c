@@ -180,6 +180,7 @@ void interpreter(const char *file) {
   }
 }
 
+
 int main(void) {
   FILE *input = fopen("incdec.vl", "r");
   FILE *bin = fopen("bin", "wb");
@@ -193,13 +194,16 @@ int main(void) {
 
   while ((current = fgetc(input))) {
 
+    // macro to define the if's easier
+    #define is(op) if ( strcmp(op, buf) == 0 )
+
     // if this condition passes that means the current part ended
     if (current == ' ' || current == '\n' || current == EOF) {
-      if (strcmp("mov", buf) == 0) {
+      is("mov") {
         emit_opcode(bin, op_mov);
-      } else if (strcmp("dec", buf) == 0) {
+      } else is("dec") {
         emit_opcode(bin, op_dec);
-      } else if (strcmp("inc", buf) == 0) {
+      } else is("inc") {
         emit_opcode(bin, op_inc);
       } else if (buf[0] == '%') {
         fwrite(buf + 1, strlen(buf), 1, bin);
