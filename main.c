@@ -172,7 +172,7 @@ void interpreter(const char *file) {
 }
 
 int main(void) {
-  FILE *input = fopen("incdec.gl", "r");
+  FILE *input = fopen("incdec.vl", "r");
   FILE *bin = fopen("bin", "wb");
   
   char *buf = calloc(1024, sizeof(char));
