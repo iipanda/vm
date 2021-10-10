@@ -4,9 +4,11 @@
 #include <string.h>
 #include <stdbool.h>
 
+// FNV-1 hash constants
 #define FNV_OFFSET_BASIS 2166136261;
 #define FNV_PRIME 16777619
 
+// FNV-1 hash function
 uint32_t fnv1(char *input) {
   uint32_t hash = FNV_OFFSET_BASIS;
 
@@ -18,18 +20,18 @@ uint32_t fnv1(char *input) {
   return hash;
 }
 
-typedef uint8_t opcode_t;
+typedef uint8_t o
 
+// opcodes
 #define op_mov 0x00
 #define op_inc 0x01
 #define op_dec 0x02
-
-typedef void *oparg_t;
 
 int emit_opcode(FILE *file, opcode_t opcode) {
   return fwrite(&opcode, sizeof(opcode), 1, file);
 }
 
+// the virtual machine memory (a hashmap)
 #define MEMSIZE 100
 
 typedef struct mem_register {
@@ -40,8 +42,10 @@ typedef struct mem_register {
 
 typedef mem_register_t **mem_t;
 
+// print the whole memory contents, used for debugging purposes
 void mem_dump(mem_t mem) {
   printf("{ ");
+
   for (size_t i = 0; i < MEMSIZE; i++) {
     mem_register_t *mem_reg = mem[i];
     while (mem_reg != NULL) {
@@ -49,6 +53,7 @@ void mem_dump(mem_t mem) {
       mem_reg = mem_reg->next;
     }
   }
+
   printf("}\n");
 }
 
@@ -92,19 +97,23 @@ void *mem_get(mem_t mem, char *reg) {
   return mem_reg->val;
 }
 
+// create the hashmap
 mem_t make_memory() {
   return calloc(MEMSIZE, sizeof(void *));
 }
 
+// interpret the bytecode
 void interpreter(const char *file) {
   FILE *bin = fopen(file, "rb");
 
   mem_t memory = make_memory();
 
+  // check the file length
   fseek(bin, 0L, SEEK_END);
   long filelen = ftell(bin);
   rewind(bin);
 
+  // counter to keep track of how many bytes we read
   int i = 0;
 
   while (i < filelen) {
@@ -175,12 +184,16 @@ int main(void) {
   FILE *input = fopen("incdec.vl", "r");
   FILE *bin = fopen("bin", "wb");
   
+  // stores the current instruction
   char *buf = calloc(1024, sizeof(char));
+  // current char
   char current;
+  // keep track of how many chars we read
   size_t i = 0;
 
   while ((current = fgetc(input))) {
 
+    // if this condition passes that means the current part ended
     if (current == ' ' || current == '\n' || current == EOF) {
       if (strcmp("mov", buf) == 0) {
         emit_opcode(bin, op_mov);
@@ -195,9 +208,11 @@ int main(void) {
         fwrite(&parsed, sizeof(parsed), 1, bin);
       }
 
+      // reset the buffer and char count
       buf = calloc(1024, sizeof(char));
       i = 0;
 
+      // break at the end of file
       if (current == EOF) {
         break;
       }
@@ -205,7 +220,9 @@ int main(void) {
       continue;
     }
 
+    // append current character to the buffer
     buf[i] = current;
+    // increment the current char count 
     i++;
   }
 
