@@ -1,0 +1,6 @@
+mov 3735928558 %a
+dec %a
+dec %a
+inc %a
+inc %a
+inc %a
