@@ -182,7 +182,7 @@ void interpreter(const char *file) {
 
 
 int main(void) {
-  FILE *input = fopen("incdec.vl", "r");
+  FILE *input = fopen("example.vl", "r");
   FILE *bin = fopen("bin", "wb");
   
   // stores the current instruction
