@@ -110,23 +110,19 @@ void compile(const char *infile, const char *outfile) {
   while ((current = fgetc(in_f))) {
 
 // macro to define the if's easier
-#define is(op) if (strcmp(op, buf) == 0)
+#define is(op) strcmp(op, buf) == 0
 
     // if this condition passes that means the current part ended
     if (current == ' ' || current == '\n' || current == EOF) {
-      is("mov") {
+      if (is("mov")) {
         emit_opcode(out_f, op_mov);
-      }
-      else is("dec") {
+      } else if (is("dec")) {
         emit_opcode(out_f, op_dec);
-      }
-      else is("inc") {
+      } else if (is("inc")) {
         emit_opcode(out_f, op_inc);
-      }
-      else if (buf[0] == '%') {
+      } else if (buf[0] == '%') {
         fwrite(buf + 1, strlen(buf), 1, out_f);
-      }
-      else {
+      } else {
         long parsed = atol(buf);
         fwrite(&parsed, sizeof(parsed), 1, out_f);
       }
