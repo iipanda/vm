@@ -8,4 +8,6 @@ The compiler compiles the source to bytecode which is then interpreted by the in
 
 ## Syntax
 
-The syntax isn't documented anywhere yet but you can see `example.vl` to get an overall idea.
+The syntax is described in the `SYNTAX.md` file.
+
+You can also see `example.vl` for example usage.
