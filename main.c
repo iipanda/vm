@@ -1,24 +1,8 @@
 #include <stdio.h>
-#include <stdint.h>
+#include <stdbool.h>
+#include <hashmap.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-
-// FNV-1 hash constants
-#define FNV_OFFSET_BASIS 2166136261;
-#define FNV_PRIME 16777619
-
-// FNV-1 hash function
-uint32_t fnv1(char *input) {
-  uint32_t hash = FNV_OFFSET_BASIS;
-
-  for (size_t i = 0; i < strlen(input); i++) {
-    hash *= FNV_PRIME;
-    hash ^= input[i];
-  }
-
-  return hash;
-}
 
 typedef uint8_t opcode_t;
 
@@ -29,77 +13,6 @@ typedef uint8_t opcode_t;
 
 int emit_opcode(FILE *file, opcode_t opcode) {
   return fwrite(&opcode, sizeof(opcode), 1, file);
-}
-
-// the virtual machine memory (a hashmap)
-#define MEMSIZE 100
-
-typedef struct mem_register {
-  char *reg;
-  void *val;
-  struct mem_register *next;
-} mem_register_t;
-
-typedef mem_register_t **mem_t;
-
-// print the whole memory contents, used for debugging purposes
-void mem_dump(mem_t mem) {
-  printf("{ ");
-
-  for (size_t i = 0; i < MEMSIZE; i++) {
-    mem_register_t *mem_reg = mem[i];
-    while (mem_reg != NULL) {
-      printf("%s:0x%lX ", mem_reg->reg, (long)mem_reg->val);
-      mem_reg = mem_reg->next;
-    }
-  }
-
-  printf("}\n");
-}
-
-void mem_put(mem_t mem, char *reg, void *value) {
-  size_t idx = fnv1(reg) % MEMSIZE;
-  mem_register_t *mem_reg = mem[idx];
-
-  mem_register_t *new_reg = malloc(sizeof(mem_register_t));
-  new_reg->reg = reg;
-  new_reg->val = value;
-  new_reg->next = NULL;
-
-  if (mem_reg == NULL) {
-    mem[idx] = new_reg;
-    return;
-  }
-
-  while (strcmp(reg, mem_reg->reg) != 0 && mem_reg->next) {
-    mem_reg = mem_reg->next;
-  }
-
-  if (strcmp(reg, mem_reg->reg) != 0) {
-    mem_reg->next = new_reg;
-  } else {
-    mem[idx] = new_reg;
-  }
-}
-
-void *mem_get(mem_t mem, char *reg) {
-  uint32_t idx = fnv1(reg) % MEMSIZE;
-  mem_register_t *mem_reg = mem[idx];
-
-  if (mem_reg == NULL) {
-    return NULL;
-  }
-
-  while (strcmp(reg, mem_reg->reg) != 0 && mem_reg->next) {
-    mem_reg = mem_reg->next;
-  }
-
-  return mem_reg->val;
-}
-
-// create the hashmap
-mem_t make_memory() {
-  return calloc(MEMSIZE, sizeof(void *));
 }
 
 // interpret the bytecode
