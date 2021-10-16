@@ -4,3 +4,6 @@ dec %a
 inc %a
 inc %a
 inc %a
+mov 1 %a
+mov 1 %b
+add %a %b

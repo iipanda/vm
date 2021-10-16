@@ -10,6 +10,7 @@ typedef uint8_t opcode_t;
 #define op_mov 0x00
 #define op_inc 0x01
 #define op_dec 0x02
+#define op_add 0x03
 
 int emit_opcode(FILE *file, opcode_t opcode) {
   return fwrite(&opcode, sizeof(opcode), 1, file);
@@ -92,6 +93,44 @@ void interpreter(const char *file) {
       printf("dec %s\n", reg);
       mem_dump(memory);
       printf("\n");
+    } else if (opcode == op_add) {
+      char *reg_a = calloc(1024, sizeof(char));
+
+      {
+        int curri = 0;
+
+        while (true) {
+          fread(reg_a + curri, sizeof(char), 1, bin);
+          if (reg_a[curri] == 0x0)
+            break;
+          curri++;
+        }
+
+        i += curri + 1;
+      }
+
+      char *reg_b = calloc(1024, sizeof(char));
+
+      {
+        int curri = 0;
+
+        while (true) {
+          fread(reg_b + curri, sizeof(char), 1, bin);
+          if (reg_b[curri] == 0x0)
+            break;
+          curri++;
+        }
+
+        i += curri + 1;
+      }
+
+      long a = (long)mem_get(memory, reg_a);
+      long b = (long)mem_get(memory, reg_b);
+      mem_put(memory, reg_a, (void *)(a + b));
+
+      printf("add %s %s\n", reg_a, reg_b);
+      mem_dump(memory);
+      printf("\n");
     }
   }
 }
@@ -120,6 +159,8 @@ void compile(const char *infile, const char *outfile) {
         emit_opcode(out_f, op_dec);
       } else if (is("inc")) {
         emit_opcode(out_f, op_inc);
+      } else if (is("add")) {
+        emit_opcode(out_f, op_add);
       } else if (buf[0] == '%') {
         fwrite(buf + 1, strlen(buf), 1, out_f);
       } else {

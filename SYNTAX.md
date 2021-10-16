@@ -22,6 +22,4 @@ Subtracts 1 from the v1 variable.
 
 ### `add [v1: variable] [v2: variable]`
 
-**!! Not yet implemented !!**
-
 Adds the values of v1 and v2 and stores the result in v1.
