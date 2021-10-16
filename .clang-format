@@ -1,0 +1,22 @@
+﻿---
+AccessModifierOffset: '0'
+AlignAfterOpenBracket: Align
+AlignEscapedNewlines: Left
+AlignOperands: 'true'
+AlignTrailingComments: 'false'
+AllowShortBlocksOnASingleLine: 'false'
+AllowShortCaseLabelsOnASingleLine: 'false'
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: 'false'
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: 'false'
+AlwaysBreakTemplateDeclarations: 'Yes'
+BreakBeforeBraces: Attach
+BinPackArguments: 'false'
+BinPackParameters: 'false'
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: 'false'
+TabWidth: '2'
+UseTab: Never
+...

@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include <stdbool.h>
 #include <hashmap.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -44,13 +44,14 @@ void interpreter(const char *file) {
 
       while (true) {
         fread(reg + curri, sizeof(char), 1, bin);
-        if (reg[curri] == 0x0) break;
+        if (reg[curri] == 0x0)
+          break;
         curri++;
       }
 
       i += curri + 1;
 
-      mem_put(memory, reg, (void*)value);
+      mem_put(memory, reg, (void *)value);
 
       printf("mov %ld %s\n", value, reg);
       mem_dump(memory);
@@ -61,7 +62,8 @@ void interpreter(const char *file) {
 
       while (true) {
         fread(reg + curri, sizeof(char), 1, bin);
-        if (reg[curri] == 0x0) break;
+        if (reg[curri] == 0x0)
+          break;
         curri++;
       }
 
@@ -78,7 +80,8 @@ void interpreter(const char *file) {
 
       while (true) {
         fread(reg + curri, sizeof(char), 1, bin);
-        if (reg[curri] == 0x0) break;
+        if (reg[curri] == 0x0)
+          break;
         curri++;
       }
 
@@ -93,11 +96,10 @@ void interpreter(const char *file) {
   }
 }
 
+void compile(const char *infile, const char *outfile) {
+  FILE *in_f = fopen(infile, "r");
+  FILE *out_f = fopen(outfile, "wb");
 
-int main(void) {
-  FILE *input = fopen("example.vl", "r");
-  FILE *bin = fopen("bin", "wb");
-  
   // stores the current instruction
   char *buf = calloc(1024, sizeof(char));
   // current char
@@ -105,24 +107,28 @@ int main(void) {
   // keep track of how many chars we read
   size_t i = 0;
 
-  while ((current = fgetc(input))) {
+  while ((current = fgetc(in_f))) {
 
-    // macro to define the if's easier
-    #define is(op) if ( strcmp(op, buf) == 0 )
+// macro to define the if's easier
+#define is(op) if (strcmp(op, buf) == 0)
 
     // if this condition passes that means the current part ended
     if (current == ' ' || current == '\n' || current == EOF) {
       is("mov") {
-        emit_opcode(bin, op_mov);
-      } else is("dec") {
-        emit_opcode(bin, op_dec);
-      } else is("inc") {
-        emit_opcode(bin, op_inc);
-      } else if (buf[0] == '%') {
-        fwrite(buf + 1, strlen(buf), 1, bin);
-      } else {
+        emit_opcode(out_f, op_mov);
+      }
+      else is("dec") {
+        emit_opcode(out_f, op_dec);
+      }
+      else is("inc") {
+        emit_opcode(out_f, op_inc);
+      }
+      else if (buf[0] == '%') {
+        fwrite(buf + 1, strlen(buf), 1, out_f);
+      }
+      else {
         long parsed = atol(buf);
-        fwrite(&parsed, sizeof(parsed), 1, bin);
+        fwrite(&parsed, sizeof(parsed), 1, out_f);
       }
 
       // reset the buffer and char count
@@ -139,12 +145,17 @@ int main(void) {
 
     // append current character to the buffer
     buf[i] = current;
-    // increment the current char count 
+    // increment the current char count
     i++;
   }
 
-  fclose(bin);
-  fclose(input);
+  fclose(out_f);
+  fclose(in_f);
+}
+
+int main(void) {
+
+  compile("example.vl", "bin");
 
   interpreter("bin");
 

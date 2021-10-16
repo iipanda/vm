@@ -1,7 +1,7 @@
 #include <hashmap.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <string.h>
 
 // FNV-1 hash function
