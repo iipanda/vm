@@ -1,6 +1,6 @@
-OBJS = main.o hashmap.o 
-SOURCE = main.c hashmap.c
-HEADER = hashmap.h
+OBJS = main.o hashmap.o futils.o
+SOURCE = main.c hashmap.c futils.c
+HEADER = hashmap.h futils.h
 OUT	= out
 CC = gcc
 DEBUG = -g0
@@ -19,6 +19,9 @@ main.o: main.c
 
 hashmap.o: hashmap.c
 	$(CC) $(FLAGS) hashmap.c 
+
+futils.o: futils.c
+	$(CC) $(FLAGS) futils.c
 
 
 rebuild: clean build

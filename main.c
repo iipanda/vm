@@ -1,3 +1,4 @@
+#include <futils.h>
 #include <hashmap.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -22,35 +23,22 @@ void interpreter(const char *file) {
 
   map_t memory = map_new();
 
-  // check the file length
-  fseek(bin, 0L, SEEK_END);
-  long filelen = ftell(bin);
-  rewind(bin);
+  long flength = flen(bin);
+  int bytes_read = 0;
 
-  // counter to keep track of how many bytes we read
-  int i = 0;
-
-  while (i < filelen) {
+  while (bytes_read < flength) {
+    // read the opcode
     char opcode;
     fread(&opcode, sizeof(char), 1, bin);
-    i++;
+    bytes_read++;
 
     if (opcode == op_mov) {
       long value;
       fread(&value, 1, sizeof(long), bin);
-      i += sizeof(long);
+      bytes_read += sizeof(long);
 
-      int curri = 0;
       char *reg = calloc(1024, sizeof(char));
-
-      while (true) {
-        fread(reg + curri, sizeof(char), 1, bin);
-        if (reg[curri] == 0x0)
-          break;
-        curri++;
-      }
-
-      i += curri + 1;
+      bytes_read += readstring(bin, reg);
 
       map_put(memory, reg, (void *)value);
 
@@ -58,17 +46,8 @@ void interpreter(const char *file) {
       map_print(memory);
       printf("\n");
     } else if (opcode == op_inc) {
-      int curri = 0;
       char *reg = calloc(1024, sizeof(char));
-
-      while (true) {
-        fread(reg + curri, sizeof(char), 1, bin);
-        if (reg[curri] == 0x0)
-          break;
-        curri++;
-      }
-
-      i += curri + 1;
+      bytes_read += readstring(bin, reg);
 
       map_put(memory, reg, (void *)((long)map_get(memory, reg) + 1));
 
@@ -76,17 +55,8 @@ void interpreter(const char *file) {
       map_print(memory);
       printf("\n");
     } else if (opcode == op_dec) {
-      int curri = 0;
       char *reg = calloc(1024, sizeof(char));
-
-      while (true) {
-        fread(reg + curri, sizeof(char), 1, bin);
-        if (reg[curri] == 0x0)
-          break;
-        curri++;
-      }
-
-      i += curri + 1;
+      bytes_read += readstring(bin, reg);
 
       map_put(memory, reg, (void *)((long)map_get(memory, reg) - 1));
 
@@ -95,34 +65,10 @@ void interpreter(const char *file) {
       printf("\n");
     } else if (opcode == op_add) {
       char *reg_a = calloc(1024, sizeof(char));
-
-      {
-        int curri = 0;
-
-        while (true) {
-          fread(reg_a + curri, sizeof(char), 1, bin);
-          if (reg_a[curri] == 0x0)
-            break;
-          curri++;
-        }
-
-        i += curri + 1;
-      }
+      bytes_read += readstring(bin, reg_a);
 
       char *reg_b = calloc(1024, sizeof(char));
-
-      {
-        int curri = 0;
-
-        while (true) {
-          fread(reg_b + curri, sizeof(char), 1, bin);
-          if (reg_b[curri] == 0x0)
-            break;
-          curri++;
-        }
-
-        i += curri + 1;
-      }
+      bytes_read += readstring(bin, reg_b);
 
       long a = (long)map_get(memory, reg_a);
       long b = (long)map_get(memory, reg_b);
