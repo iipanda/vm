@@ -1,9 +1,7 @@
-mov 3735928558 %a
-dec %a
-dec %a
-inc %a
-inc %a
-inc %a
+mov 3735928558 %dbf
+dec %dbf
+inc %dbf
+inc %dbf
 mov 1 %a
 mov 1 %b
 add %a %b
