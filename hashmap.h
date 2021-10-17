@@ -19,14 +19,12 @@ typedef struct map_bucket {
 
 typedef map_bucket_t **map_t;
 
-// print the whole memory contents, used for debugging purposes
 void map_print(map_t mem);
 
 void map_put(map_t mem, char *reg, void *value);
 
 void *map_get(map_t mem, char *reg);
 
-// create the hashmap
 map_t map_new();
 
 #endif

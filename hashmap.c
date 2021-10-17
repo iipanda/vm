@@ -16,58 +16,58 @@ uint32_t fnv1(char *input) {
   return hash;
 }
 
-void map_print(map_t mem) {
+void map_print(map_t map) {
   printf("{ ");
 
   for (size_t i = 0; i < MAPSIZE; i++) {
-    map_bucket_t *mem_reg = mem[i];
-    while (mem_reg != NULL) {
-      printf("%s:0x%lX ", mem_reg->reg, (long)mem_reg->val);
-      mem_reg = mem_reg->next;
+    map_bucket_t *bucket = map[i];
+    while (bucket != NULL) {
+      printf("%s:0x%lX ", bucket->reg, (long)bucket->val);
+      bucket = bucket->next;
     }
   }
 
   printf("}\n");
 }
 
-void map_put(map_t mem, char *reg, void *value) {
+void map_put(map_t map, char *reg, void *value) {
   size_t idx = fnv1(reg) % MAPSIZE;
-  map_bucket_t *mem_reg = mem[idx];
+  map_bucket_t *bucket = map[idx];
 
   map_bucket_t *new_reg = malloc(sizeof(map_bucket_t));
   new_reg->reg = reg;
   new_reg->val = value;
   new_reg->next = NULL;
 
-  if (mem_reg == NULL) {
-    mem[idx] = new_reg;
+  if (bucket == NULL) {
+    map[idx] = new_reg;
     return;
   }
 
-  while (strcmp(reg, mem_reg->reg) != 0 && mem_reg->next) {
-    mem_reg = mem_reg->next;
+  while (strcmp(reg, bucket->reg) != 0 && bucket->next) {
+    bucket = bucket->next;
   }
 
-  if (strcmp(reg, mem_reg->reg) != 0) {
-    mem_reg->next = new_reg;
+  if (strcmp(reg, bucket->reg) != 0) {
+    bucket->next = new_reg;
   } else {
-    mem[idx] = new_reg;
+    map[idx] = new_reg;
   }
 }
 
-void *map_get(map_t mem, char *reg) {
+void *map_get(map_t map, char *reg) {
   uint32_t idx = fnv1(reg) % MAPSIZE;
-  map_bucket_t *mem_reg = mem[idx];
+  map_bucket_t *bucket = map[idx];
 
-  if (mem_reg == NULL) {
+  if (bucket == NULL) {
     return NULL;
   }
 
-  while (strcmp(reg, mem_reg->reg) != 0 && mem_reg->next) {
-    mem_reg = mem_reg->next;
+  while (strcmp(reg, bucket->reg) != 0 && bucket->next) {
+    bucket = bucket->next;
   }
 
-  return mem_reg->val;
+  return bucket->val;
 }
 
 map_t map_new() {
