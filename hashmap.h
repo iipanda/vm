@@ -9,25 +9,24 @@
 
 uint32_t fnv1(char *input);
 
-// the virtual machine memory (a hashmap)
-#define MEMSIZE 100
+#define MAPSIZE 100
 
-typedef struct mem_register {
+typedef struct map_bucket {
   char *reg;
   void *val;
-  struct mem_register *next;
-} mem_register_t;
+  struct map_bucket *next;
+} map_bucket_t;
 
-typedef mem_register_t **mem_t;
+typedef map_bucket_t **map_t;
 
 // print the whole memory contents, used for debugging purposes
-void mem_dump(mem_t mem);
+void map_print(map_t mem);
 
-void mem_put(mem_t mem, char *reg, void *value);
+void map_put(map_t mem, char *reg, void *value);
 
-void *mem_get(mem_t mem, char *reg);
+void *map_get(map_t mem, char *reg);
 
 // create the hashmap
-mem_t make_memory();
+map_t map_new();
 
 #endif

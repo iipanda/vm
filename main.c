@@ -20,7 +20,7 @@ int emit_opcode(FILE *file, opcode_t opcode) {
 void interpreter(const char *file) {
   FILE *bin = fopen(file, "rb");
 
-  mem_t memory = make_memory();
+  map_t memory = map_new();
 
   // check the file length
   fseek(bin, 0L, SEEK_END);
@@ -52,10 +52,10 @@ void interpreter(const char *file) {
 
       i += curri + 1;
 
-      mem_put(memory, reg, (void *)value);
+      map_put(memory, reg, (void *)value);
 
       printf("mov %ld %s\n", value, reg);
-      mem_dump(memory);
+      map_print(memory);
       printf("\n");
     } else if (opcode == op_inc) {
       int curri = 0;
@@ -70,10 +70,10 @@ void interpreter(const char *file) {
 
       i += curri + 1;
 
-      mem_put(memory, reg, (void *)((long)mem_get(memory, reg) + 1));
+      map_put(memory, reg, (void *)((long)map_get(memory, reg) + 1));
 
       printf("inc %s\n", reg);
-      mem_dump(memory);
+      map_print(memory);
       printf("\n");
     } else if (opcode == op_dec) {
       int curri = 0;
@@ -88,10 +88,10 @@ void interpreter(const char *file) {
 
       i += curri + 1;
 
-      mem_put(memory, reg, (void *)((long)mem_get(memory, reg) - 1));
+      map_put(memory, reg, (void *)((long)map_get(memory, reg) - 1));
 
       printf("dec %s\n", reg);
-      mem_dump(memory);
+      map_print(memory);
       printf("\n");
     } else if (opcode == op_add) {
       char *reg_a = calloc(1024, sizeof(char));
@@ -124,12 +124,12 @@ void interpreter(const char *file) {
         i += curri + 1;
       }
 
-      long a = (long)mem_get(memory, reg_a);
-      long b = (long)mem_get(memory, reg_b);
-      mem_put(memory, reg_a, (void *)(a + b));
+      long a = (long)map_get(memory, reg_a);
+      long b = (long)map_get(memory, reg_b);
+      map_put(memory, reg_a, (void *)(a + b));
 
       printf("add %s %s\n", reg_a, reg_b);
-      mem_dump(memory);
+      map_print(memory);
       printf("\n");
     }
   }
