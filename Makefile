@@ -1,5 +1,5 @@
-FILES = main hashmap futils
-OBJS = $(addsuffix .o, $(FILES))
+FILES = $(wildcard ./*.c)
+OBJS = $(patsubst ./%.c, %.o, $(FILES))
 
 OUT	= out
 CC = gcc
