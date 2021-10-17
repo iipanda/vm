@@ -1,6 +1,6 @@
-OBJS = main.o hashmap.o futils.o
-SOURCE = main.c hashmap.c futils.c
-HEADER = hashmap.h futils.h
+FILES = main hashmap futils
+OBJS = $(addsuffix .o, $(FILES))
+
 OUT	= out
 CC = gcc
 DEBUG = -g0
@@ -14,14 +14,9 @@ LFLAGS =
 build: $(OBJS)
 	$(CC) $(DEBUG) $(OBJS) -o $(OUT) $(LFLAGS)
 
-main.o: main.c
-	$(CC) $(FLAGS) main.c 
 
-hashmap.o: hashmap.c
-	$(CC) $(FLAGS) hashmap.c 
-
-futils.o: futils.c
-	$(CC) $(FLAGS) futils.c
+$(OBJS): %.o: %.c
+	$(CC) $(FLAGS) $<
 
 
 rebuild: clean build
