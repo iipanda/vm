@@ -6,10 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// macro to define the if's easier
 #define is(op) strcmp(op, buf) == 0
 
-// interpret the bytecode
 void interpreter(const char* file) {
   FILE* bin = fopen(file, "rb");
 
