@@ -1,4 +1,5 @@
 #include <hashmap.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,59 +18,85 @@ uint32_t fnv1(char* input) {
 }
 
 void map_print(map_t map) {
-  printf("{ ");
+  printf("{\n");
 
-  for (size_t i = 0; i < MAP_BASE_SIZE; i++) {
-    map_bucket_t* bucket = map[i];
-    while (bucket != NULL) {
-      printf("%s:0x%lX ", bucket->reg, (long)bucket->val);
-      bucket = bucket->next;
+  for (size_t i = 0; i < map->size; i++) {
+    map_items_t items = map->items;
+    map_item_t* item = items[i];
+
+    while (item != NULL) {
+      printf("  %s: 0x%lX\n", item->key, (long)item->value);
+      item = item->next;
     }
   }
 
   printf("}\n");
 }
 
-void map_put(map_t map, char* reg, void* value) {
-  size_t idx = fnv1(reg) % MAP_BASE_SIZE;
-  map_bucket_t* bucket = map[idx];
+// TODO: there's a memory leak here because we don't free the old item
+void map_put(map_t map, char* key, void* value) {
+  uint32_t hash = fnv1(key);
+  size_t idx = hash % map->size;
 
-  map_bucket_t* new_reg = malloc(sizeof(map_bucket_t));
-  new_reg->reg = reg;
-  new_reg->val = value;
-  new_reg->next = NULL;
+  map_item_t* new_item = malloc(sizeof(map_item_t));
+  new_item->key = key;
+  new_item->value = value;
+  new_item->next = NULL;
+  new_item->hash = hash;
 
-  if (bucket == NULL) {
-    map[idx] = new_reg;
+  map_items_t items = map->items;
+  map_item_t* item = items[idx];
+
+  if (item == NULL) {
+    items[idx] = new_item;
     return;
   }
 
-  while (strcmp(reg, bucket->reg) != 0 && bucket->next) {
-    bucket = bucket->next;
+  bool match = false;
+  map_item_t* previous_item = NULL;
+
+  while (!match && item->next) {
+    previous_item = item;
+    item = item->next;
+    match = hash == item->hash && strcmp(key, item->key) == 0;
   }
 
-  if (strcmp(reg, bucket->reg) != 0) {
-    bucket->next = new_reg;
+  if (strcmp(key, item->key) == 0) {
+    if (previous_item == NULL) {
+      items[idx] = new_item;
+    } else {
+      new_item->next = item->next;
+      previous_item->next = new_item;
+    }
   } else {
-    map[idx] = new_reg;
+    item->next = new_item;
   }
 }
 
-void* map_get(map_t map, char* reg) {
-  uint32_t idx = fnv1(reg) % MAP_BASE_SIZE;
-  map_bucket_t* bucket = map[idx];
+void* map_get(map_t map, char* key) {
+  uint32_t hash = fnv1(key);
+  size_t idx = hash % map->size;
 
-  if (bucket == NULL) {
+  map_item_t* item = map->items[idx];
+
+  if (item == NULL) {
     return NULL;
   }
 
-  while (strcmp(reg, bucket->reg) != 0 && bucket->next) {
-    bucket = bucket->next;
+  while (hash != item->hash && strcmp(key, item->key) != 0 && item->next) {
+    item = item->next;
   }
 
-  return bucket->val;
+  return item->value;
 }
 
 map_t map_new() {
-  return calloc(MAP_BASE_SIZE, sizeof(void*));
+  size_t size = MAP_BASE_SIZE;
+
+  map_t map = calloc(1, sizeof(map_t));
+
+  map->items = calloc(size, sizeof(void*));
+  map->size = size;
+
+  return map;
 }

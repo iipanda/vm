@@ -2,6 +2,7 @@
 #define __HASHMAP_H
 
 #include <stdint.h>
+#include <stdlib.h>
 
 // FNV-1 hash constants
 #define FNV_OFFSET_BASIS 2166136261;
@@ -9,21 +10,27 @@
 
 uint32_t fnv1(char* input);
 
-#define MAP_BASE_SIZE 100
+#define MAP_BASE_SIZE (size_t)100
 
-typedef struct map_bucket {
-  char* reg;
-  void* val;
-  struct map_bucket* next;
-} map_bucket_t;
+typedef struct map_item {
+  char* key;
+  void* value;
+  uint32_t hash;
+  struct map_item* next;
+} map_item_t;
 
-typedef map_bucket_t** map_t;
+typedef map_item_t** map_items_t;
 
-void map_print(map_t mem);
+typedef struct map {
+  map_items_t items;
+  size_t size;
+} * map_t;
 
-void map_put(map_t mem, char* reg, void* value);
+void map_print(map_t map);
 
-void* map_get(map_t mem, char* reg);
+void map_put(map_t map, char* reg, void* value);
+
+void* map_get(map_t map, char* reg);
 
 map_t map_new();
 
