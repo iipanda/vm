@@ -5,7 +5,7 @@
 #include <string.h>
 
 // FNV-1 hash function
-uint32_t fnv1(char *input) {
+uint32_t fnv1(char* input) {
   uint32_t hash = FNV_OFFSET_BASIS;
 
   for (size_t i = 0; i < strlen(input); i++) {
@@ -19,8 +19,8 @@ uint32_t fnv1(char *input) {
 void map_print(map_t map) {
   printf("{ ");
 
-  for (size_t i = 0; i < MAPSIZE; i++) {
-    map_bucket_t *bucket = map[i];
+  for (size_t i = 0; i < MAP_BASE_SIZE; i++) {
+    map_bucket_t* bucket = map[i];
     while (bucket != NULL) {
       printf("%s:0x%lX ", bucket->reg, (long)bucket->val);
       bucket = bucket->next;
@@ -30,11 +30,11 @@ void map_print(map_t map) {
   printf("}\n");
 }
 
-void map_put(map_t map, char *reg, void *value) {
-  size_t idx = fnv1(reg) % MAPSIZE;
-  map_bucket_t *bucket = map[idx];
+void map_put(map_t map, char* reg, void* value) {
+  size_t idx = fnv1(reg) % MAP_BASE_SIZE;
+  map_bucket_t* bucket = map[idx];
 
-  map_bucket_t *new_reg = malloc(sizeof(map_bucket_t));
+  map_bucket_t* new_reg = malloc(sizeof(map_bucket_t));
   new_reg->reg = reg;
   new_reg->val = value;
   new_reg->next = NULL;
@@ -55,9 +55,9 @@ void map_put(map_t map, char *reg, void *value) {
   }
 }
 
-void *map_get(map_t map, char *reg) {
-  uint32_t idx = fnv1(reg) % MAPSIZE;
-  map_bucket_t *bucket = map[idx];
+void* map_get(map_t map, char* reg) {
+  uint32_t idx = fnv1(reg) % MAP_BASE_SIZE;
+  map_bucket_t* bucket = map[idx];
 
   if (bucket == NULL) {
     return NULL;
@@ -71,5 +71,5 @@ void *map_get(map_t map, char *reg) {
 }
 
 map_t map_new() {
-  return calloc(MAPSIZE, sizeof(void *));
+  return calloc(MAP_BASE_SIZE, sizeof(void*));
 }

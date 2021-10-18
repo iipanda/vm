@@ -10,8 +10,8 @@
 #define is(op) strcmp(op, buf) == 0
 
 // interpret the bytecode
-void interpreter(const char *file) {
-  FILE *bin = fopen(file, "rb");
+void interpreter(const char* file) {
+  FILE* bin = fopen(file, "rb");
 
   map_t memory = map_new();
 
@@ -29,42 +29,42 @@ void interpreter(const char *file) {
       fread(&value, 1, sizeof(long), bin);
       bytes_read += sizeof(long);
 
-      char *reg = calloc(1024, sizeof(char));
+      char* reg = calloc(1024, sizeof(char));
       bytes_read += readstring(bin, reg);
 
-      map_put(memory, reg, (void *)value);
+      map_put(memory, reg, (void*)value);
 
       printf("mov %ld %s\n", value, reg);
       map_print(memory);
       printf("\n");
     } else if (opcode == op_inc) {
-      char *reg = calloc(1024, sizeof(char));
+      char* reg = calloc(1024, sizeof(char));
       bytes_read += readstring(bin, reg);
 
-      map_put(memory, reg, (void *)((long)map_get(memory, reg) + 1));
+      map_put(memory, reg, (void*)((long)map_get(memory, reg) + 1));
 
       printf("inc %s\n", reg);
       map_print(memory);
       printf("\n");
     } else if (opcode == op_dec) {
-      char *reg = calloc(1024, sizeof(char));
+      char* reg = calloc(1024, sizeof(char));
       bytes_read += readstring(bin, reg);
 
-      map_put(memory, reg, (void *)((long)map_get(memory, reg) - 1));
+      map_put(memory, reg, (void*)((long)map_get(memory, reg) - 1));
 
       printf("dec %s\n", reg);
       map_print(memory);
       printf("\n");
     } else if (opcode == op_add) {
-      char *reg_a = calloc(1024, sizeof(char));
+      char* reg_a = calloc(1024, sizeof(char));
       bytes_read += readstring(bin, reg_a);
 
-      char *reg_b = calloc(1024, sizeof(char));
+      char* reg_b = calloc(1024, sizeof(char));
       bytes_read += readstring(bin, reg_b);
 
       long a = (long)map_get(memory, reg_a);
       long b = (long)map_get(memory, reg_b);
-      map_put(memory, reg_a, (void *)(a + b));
+      map_put(memory, reg_a, (void*)(a + b));
 
       printf("add %s %s\n", reg_a, reg_b);
       map_print(memory);
@@ -73,12 +73,12 @@ void interpreter(const char *file) {
   }
 }
 
-void compile(const char *infile, const char *outfile) {
-  FILE *in_f = fopen(infile, "r");
-  FILE *out_f = fopen(outfile, "wb");
+void compile(const char* infile, const char* outfile) {
+  FILE* in_f = fopen(infile, "r");
+  FILE* out_f = fopen(outfile, "wb");
 
   // stores the current instruction
-  char *buf = calloc(1024, sizeof(char));
+  char* buf = calloc(1024, sizeof(char));
   // current char
   char current;
   // keep track of how many chars we read

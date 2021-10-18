@@ -14,6 +14,6 @@ typedef uint8_t opcode_t;
 #define op_dec op(0x02)
 #define op_add op(0x03)
 
-int emit_opcode(FILE *file, opcode_t opcode);
+int emit_opcode(FILE* file, opcode_t opcode);
 
 #endif

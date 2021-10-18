@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 
-long flen(FILE *file);
+long flen(FILE* file);
 
-long readstring(FILE *bin, char *buffer);
+long readstring(FILE* bin, char* buffer);
 
 #endif

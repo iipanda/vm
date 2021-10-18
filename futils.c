@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-long flen(FILE *file) {
+long flen(FILE* file) {
   fseek(file, 0L, SEEK_END);
   long filelen = ftell(file);
   rewind(file);
@@ -9,7 +9,7 @@ long flen(FILE *file) {
   return filelen;
 }
 
-long readstring(FILE *bin, char *buffer) {
+long readstring(FILE* bin, char* buffer) {
   int curri = 0;
 
   while (true) {

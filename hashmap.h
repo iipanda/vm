@@ -7,23 +7,23 @@
 #define FNV_OFFSET_BASIS 2166136261;
 #define FNV_PRIME 16777619
 
-uint32_t fnv1(char *input);
+uint32_t fnv1(char* input);
 
-#define MAPSIZE 100
+#define MAP_BASE_SIZE 100
 
 typedef struct map_bucket {
-  char *reg;
-  void *val;
-  struct map_bucket *next;
+  char* reg;
+  void* val;
+  struct map_bucket* next;
 } map_bucket_t;
 
-typedef map_bucket_t **map_t;
+typedef map_bucket_t** map_t;
 
 void map_print(map_t mem);
 
-void map_put(map_t mem, char *reg, void *value);
+void map_put(map_t mem, char* reg, void* value);
 
-void *map_get(map_t mem, char *reg);
+void* map_get(map_t mem, char* reg);
 
 map_t map_new();
 

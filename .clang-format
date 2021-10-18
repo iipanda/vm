@@ -1,22 +1,22 @@
 ﻿---
-AccessModifierOffset: '0'
+AccessModifierOffset: "0"
 AlignAfterOpenBracket: Align
 AlignEscapedNewlines: Left
-AlignOperands: 'true'
-AlignTrailingComments: 'false'
-AllowShortBlocksOnASingleLine: 'false'
-AllowShortCaseLabelsOnASingleLine: 'false'
+AlignOperands: "true"
+AlignTrailingComments: "false"
+AllowShortBlocksOnASingleLine: "false"
+AllowShortCaseLabelsOnASingleLine: "false"
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
-AllowShortLoopsOnASingleLine: 'false'
+AllowShortLoopsOnASingleLine: "false"
 AlwaysBreakAfterReturnType: None
-AlwaysBreakBeforeMultilineStrings: 'false'
-AlwaysBreakTemplateDeclarations: 'Yes'
+AlwaysBreakBeforeMultilineStrings: "false"
+AlwaysBreakTemplateDeclarations: "Yes"
 BreakBeforeBraces: Attach
-BinPackArguments: 'false'
-BinPackParameters: 'false'
+BinPackArguments: "false"
+BinPackParameters: "false"
 SpaceBeforeParens: ControlStatements
-SpaceInEmptyParentheses: 'false'
-TabWidth: '2'
+SpaceInEmptyParentheses: "false"
+TabWidth: "2"
 UseTab: Never
-...
+PointerAlignment: Left
