@@ -33,12 +33,12 @@ void map_print(map_t* map) {
   printf("}\n");
 }
 
-map_item_t item_new(uint32_t hash, char* key, void* value) {
-  map_item_t item;
-  item.key = key;
-  item.value = value;
-  item.next = NULL;
-  item.hash = hash;
+map_item_t* item_new(uint32_t hash, char* key, void* value) {
+  map_item_t* item = malloc(sizeof(map_item_t));
+  item->key = key;
+  item->value = value;
+  item->next = NULL;
+  item->hash = hash;
   return item;
 }
 
@@ -50,8 +50,7 @@ void map_put(map_t* map, char* key, void* value) {
   map_item_t* item = items[idx];
 
   if (item == NULL) {
-    map_item_t new_item = item_new(hash, key, value);
-    items[idx] = &new_item;
+    items[idx] = item_new(hash, key, value);
     return;
   }
 
@@ -65,8 +64,7 @@ void map_put(map_t* map, char* key, void* value) {
   if (strcmp(key, item->key) == 0) {
     item->value = value;
   } else {
-    map_item_t new_item = item_new(hash, key, value);
-    item->next = &new_item;
+    item->next = item_new(hash, key, value);
   }
 }
 

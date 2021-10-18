@@ -34,6 +34,6 @@ void* map_get(map_t* map, char* reg);
 
 map_t map_new();
 
-map_item_t item_new();
+map_item_t* item_new();
 
 #endif
