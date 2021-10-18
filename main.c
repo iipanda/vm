@@ -1,21 +1,13 @@
 #include <futils.h>
 #include <hashmap.h>
+#include <ops.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef uint8_t opcode_t;
-
-// opcodes
-#define op_mov 0x00
-#define op_inc 0x01
-#define op_dec 0x02
-#define op_add 0x03
-
-int emit_opcode(FILE *file, opcode_t opcode) {
-  return fwrite(&opcode, sizeof(opcode), 1, file);
-}
+// macro to define the if's easier
+#define is(op) strcmp(op, buf) == 0
 
 // interpret the bytecode
 void interpreter(const char *file) {
@@ -94,10 +86,7 @@ void compile(const char *infile, const char *outfile) {
 
   while ((current = fgetc(in_f))) {
 
-// macro to define the if's easier
-#define is(op) strcmp(op, buf) == 0
-
-    // if this condition passes that means the current part ended
+    // if this condition passes that means the current part (or the file) ended
     if (current == ' ' || current == '\n' || current == EOF) {
       if (is("mov")) {
         emit_opcode(out_f, op_mov);
