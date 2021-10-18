@@ -17,7 +17,7 @@ uint32_t fnv1(char* input) {
   return hash;
 }
 
-void map_print(map_t map) {
+void map_print(map_t* map) {
   printf("{\n");
 
   for (size_t i = 0; i < map->size; i++) {
@@ -33,47 +33,44 @@ void map_print(map_t map) {
   printf("}\n");
 }
 
-// TODO: there's a memory leak here because we don't free the old item
-void map_put(map_t map, char* key, void* value) {
+map_item_t item_new(uint32_t hash, char* key, void* value) {
+  map_item_t item;
+  item.key = key;
+  item.value = value;
+  item.next = NULL;
+  item.hash = hash;
+  return item;
+}
+
+void map_put(map_t* map, char* key, void* value) {
   uint32_t hash = fnv1(key);
   size_t idx = hash % map->size;
-
-  map_item_t* new_item = malloc(sizeof(map_item_t));
-  new_item->key = key;
-  new_item->value = value;
-  new_item->next = NULL;
-  new_item->hash = hash;
 
   map_items_t items = map->items;
   map_item_t* item = items[idx];
 
   if (item == NULL) {
-    items[idx] = new_item;
+    map_item_t new_item = item_new(hash, key, value);
+    items[idx] = &new_item;
     return;
   }
 
   bool match = false;
-  map_item_t* previous_item = NULL;
 
   while (!match && item->next) {
-    previous_item = item;
     item = item->next;
     match = hash == item->hash && strcmp(key, item->key) == 0;
   }
 
   if (strcmp(key, item->key) == 0) {
-    if (previous_item == NULL) {
-      items[idx] = new_item;
-    } else {
-      new_item->next = item->next;
-      previous_item->next = new_item;
-    }
+    item->value = value;
   } else {
-    item->next = new_item;
+    map_item_t new_item = item_new(hash, key, value);
+    item->next = &new_item;
   }
 }
 
-void* map_get(map_t map, char* key) {
+void* map_get(map_t* map, char* key) {
   uint32_t hash = fnv1(key);
   size_t idx = hash % map->size;
 
@@ -93,10 +90,10 @@ void* map_get(map_t map, char* key) {
 map_t map_new() {
   size_t size = MAP_BASE_SIZE;
 
-  map_t map = calloc(1, sizeof(map_t));
+  map_t map;
 
-  map->items = calloc(size, sizeof(void*));
-  map->size = size;
+  map.items = calloc(size, sizeof(void*));
+  map.size = size;
 
   return map;
 }

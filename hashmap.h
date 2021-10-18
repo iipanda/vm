@@ -24,14 +24,16 @@ typedef map_item_t** map_items_t;
 typedef struct map {
   map_items_t items;
   size_t size;
-} * map_t;
+} map_t;
 
-void map_print(map_t map);
+void map_print(map_t* map);
 
-void map_put(map_t map, char* reg, void* value);
+void map_put(map_t* map, char* reg, void* value);
 
-void* map_get(map_t map, char* reg);
+void* map_get(map_t* map, char* reg);
 
 map_t map_new();
+
+map_item_t item_new();
 
 #endif

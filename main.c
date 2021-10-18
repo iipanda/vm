@@ -30,28 +30,28 @@ void interpreter(const char* file) {
       char* reg = calloc(1024, sizeof(char));
       bytes_read += readstring(bin, reg);
 
-      map_put(memory, reg, (void*)value);
+      map_put(&memory, reg, (void*)value);
 
       printf("mov %ld %s\n", value, reg);
-      map_print(memory);
+      map_print(&memory);
       printf("\n");
     } else if (opcode == op_inc) {
       char* reg = calloc(1024, sizeof(char));
       bytes_read += readstring(bin, reg);
 
-      map_put(memory, reg, (void*)((long)map_get(memory, reg) + 1));
+      map_put(&memory, reg, (void*)((long)map_get(&memory, reg) + 1));
 
       printf("inc %s\n", reg);
-      map_print(memory);
+      map_print(&memory);
       printf("\n");
     } else if (opcode == op_dec) {
       char* reg = calloc(1024, sizeof(char));
       bytes_read += readstring(bin, reg);
 
-      map_put(memory, reg, (void*)((long)map_get(memory, reg) - 1));
+      map_put(&memory, reg, (void*)((long)map_get(&memory, reg) - 1));
 
       printf("dec %s\n", reg);
-      map_print(memory);
+      map_print(&memory);
       printf("\n");
     } else if (opcode == op_add) {
       char* reg_a = calloc(1024, sizeof(char));
@@ -60,12 +60,12 @@ void interpreter(const char* file) {
       char* reg_b = calloc(1024, sizeof(char));
       bytes_read += readstring(bin, reg_b);
 
-      long a = (long)map_get(memory, reg_a);
-      long b = (long)map_get(memory, reg_b);
-      map_put(memory, reg_a, (void*)(a + b));
+      long a = (long)map_get(&memory, reg_a);
+      long b = (long)map_get(&memory, reg_b);
+      map_put(&memory, reg_a, (void*)(a + b));
 
       printf("add %s %s\n", reg_a, reg_b);
-      map_print(memory);
+      map_print(&memory);
       printf("\n");
     }
   }
