@@ -13,15 +13,15 @@ LFLAGS =
 valgrind valgrind_extreme valgrind_leakcheck : DEBUG = -g3
 
 
-all: build run
-
-
 build: $(OBJS)
 	$(CC) $(DEBUG) $(OBJS) -o $(OUT) $(LFLAGS)
 
 
 $(OBJS): %.o: %.c
 	$(CC) $(DEBUG) $(FLAGS) $<
+
+
+all: build run
 
 
 rebuild: clean build
