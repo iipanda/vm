@@ -61,7 +61,7 @@ void map_put(map_t* map, char* key, void* value) {
     match = hash == item->hash && strcmp(key, item->key) == 0;
   }
 
-  if (strcmp(key, item->key) == 0) {
+  if (match) {
     item->value = value;
   } else {
     item->next = item_new(hash, key, value);
