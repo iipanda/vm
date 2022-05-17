@@ -24,7 +24,7 @@ Subtracts 1 from the v1 variable.
 
 Adds the values of v1 and v2 and stores the result in v1.
 
-## Proposed instructions (not implemented)
+## Pending instructions (not implemented)
 
 ### `mov [v1: variable] [v2: variable]`
 
@@ -38,7 +38,7 @@ Prints the v1 variable's value to the screen.
 
 Prints the n1 number to the screen.
 
-## Proposed changes
+## Pending changes
 
 ### Change `mov` argument order to be consistent with other instructions
 
